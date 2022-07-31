@@ -1,11 +1,16 @@
 import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import Header from '../components/Header'
+import Head from 'next/head';
+import Image from 'next/image';
+import Header from '../components/Header';
+import { sanityClient, urlFor } from "../sanity";
 
-const Home: NextPage = () => {
+interface props {
+  posts: [Post];
+}
+
+const Home: NextPage = (props: Props) => {
   return (
-    <div className="">
+    <div className="max-w-7xl mx-auto">
       <Head>
         <title>Armistic Blog</title>
         <link rel="icon" href="/favicon.ico" />
@@ -22,8 +27,31 @@ const Home: NextPage = () => {
         <img className="hidden md:inline-flex h-32 lg:h-full" src="https://o.remove.bg/downloads/c4a722db-3db7-48ec-8562-65db23cfd5de/LOGO-removebg-preview.png" alt="Logo" />
 
       </div>
+
+      {/*posts*/}
     </div>
   )
 }
 
-export default Home
+export default Home;
+
+export const getServerSideProps = async () => {
+  const query = `*[_type=="post"]{
+    _id,title,
+    author =>{
+    name,
+    image
+  },
+  description,
+  mainImage,
+  slug
+  }`;
+
+  const posts = await sanityClient.fetch(query);
+
+  return {
+    props: {
+      posts,
+    },
+  };
+};
