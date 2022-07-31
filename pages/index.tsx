@@ -3,12 +3,15 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Header from '../components/Header';
 import { sanityClient, urlFor } from "../sanity";
+import { Post } from "../typings";
+import Link from "next/link";
 
-interface props {
+interface Props {
   posts: [Post];
 }
 
-const Home: NextPage = (props: Props) => {
+export default function Home({ posts }: Props) {
+  console.log(posts);
   return (
     <div className="max-w-7xl mx-auto">
       <Head>
@@ -28,12 +31,23 @@ const Home: NextPage = (props: Props) => {
 
       </div>
 
-      {/*posts*/}
-    </div>
-  )
-}
+      {/*Posts*/}
 
-export default Home;
+      <div>
+        {posts.map((post) => (
+          <Link key={post._id} href={`/post/${post.slug.current}`}>
+            <div>
+              <img src={urlFor(post.mainImage).url()!} alt="" />
+            </div>
+          </Link>
+        ))}
+      </div>
+
+
+
+    </div>
+  );
+}
 
 export const getServerSideProps = async () => {
   const query = `*[_type=="post"]{
