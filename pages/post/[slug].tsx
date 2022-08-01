@@ -18,7 +18,25 @@ interface Props {
 
 function Post({ post }: Props) {
 
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<IFormInput>();
+
+    const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+        await fetch('/api/createComment',
+            {
+                method: 'POST',
+                body: JSON.stringify(data),
+            }
+
+        ).then(() => {
+            console.log(data);
+        }).catch((err) => {
+            console.log(err);
+        });
+    };
 
     return (
         <main>
@@ -34,7 +52,7 @@ function Post({ post }: Props) {
                 <div className="flex items-center space-x-2">
                     <img className="h-10 w-10 rounded-full" src={urlFor(post.author.image).url()!} alt="" />
                     <p className="font-extralight text-sm">
-                        Blog Post By <span className="text-blue-600">{post.author.name}</span> -
+                        Blog Post By {" "} <span className="text-blue-600">{post.author.name}</span> -
                         Published at {new Date(post._createdAt).toLocaleString()}
                     </p>
                 </div>
@@ -66,7 +84,7 @@ function Post({ post }: Props) {
             </article>
             <hr className="max-w-lg my-5 mx-auto border border-blue-500" />
 
-            <form className="flex flex-col p-5 max-w-2xl mx-auto mb-10">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col p-5 max-w-2xl mx-auto mb-10">
 
                 <h3 className="text-sm text-blue-500">Enjoyed this article</h3>
                 <h4 className="text-3xl font-bold">Leave a comment below</h4>
@@ -85,21 +103,21 @@ function Post({ post }: Props) {
                     <input
                         {...register("name", { required: true })}
                         className="shadow border rounded py-2 px-3 form-input mt-1
-                     block w-full ring-blue-500 outline-none focus:ring" placeholder="NJ" type="text" />
+                     block w-full ring-blue-500 outline-none focus:ring" placeholder="Name" type="text" />
                 </label>
                 <label className="block mb-5">
                     <span className="text-gray-700">Email</span>
                     <input
                         {...register("email", { required: true })}
                         className="shadow border rounded py-2 px-3 form-input mt-1
-                     block w-full ring-blue-500 outline-none focus:ring" placeholder="NJ" type="text" />
+                     block w-full ring-blue-500 outline-none focus:ring" placeholder="Email" type="email" />
                 </label>
                 <label className="block mb-5">
                     <span className="text-gray-700">Comment</span>
                     <textarea
                         {...register("comment", { required: true })}
                         className="shadow border rounded py-2 px-3 form-textarea mt-1 block
-                     w-full ring-blue-500 outline-none focus:ring" placeholder="NJ" rows={8} />
+                     w-full ring-blue-500 outline-none focus:ring" placeholder="Describe" rows={8} />
                 </label>
                 <div className="flex flex-col p-5">
                     {errors.name && (
@@ -112,6 +130,8 @@ function Post({ post }: Props) {
                         <span className="text-red-500">The Email field required</span>
                     )}
                 </div>
+
+                <input type="submit" className="shadow bg-blue-600 hover:bg-blue-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded cursor-pointer" />
             </form>
         </main>
     );
