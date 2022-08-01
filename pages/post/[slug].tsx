@@ -102,7 +102,7 @@ function Post({ post }: Props) {
                     <hr className="py-3 mt-2" />
 
                     <input
-                        {...register("id")}
+                        {...register("_id")}
                         type="hidden"
                         name="_id"
                         value={post._id}
@@ -190,7 +190,7 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
     const query = `
-    *[_type == "post" && slug.current == "my-post"][0]{
+    *[_type == "post" && slug.current == $slug][0]{
         _id,
         _createdAt,
         title,
