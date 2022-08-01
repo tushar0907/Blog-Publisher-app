@@ -3,8 +3,8 @@ export interface Post {
     _createdAt: string;
     title: string;
     author: {
-        name: string;
-        image: string;
+        name: reference;
+        image: reference;
     };
     description: string;
     mainImage: {
@@ -15,6 +15,6 @@ export interface Post {
     slug: {
         current: string;
     };
-    body: { object };
+    body: [object];
 
 }
